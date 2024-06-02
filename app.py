@@ -10,9 +10,15 @@ app.secret_key = "8fhkslfmpio4pa98"
 app.config['SESSION_COOKIE_NAME'] = 'Beach Cookie'
 
 @app.route('/')
-def index():
+def login():
     return "Song Swiper"
+
+@app.route('/redirect')
+def redirect():
+    return "redirect"
 
 @app.route('/getTracks')
 def getTracks():
     return "User top songs"
+
+
