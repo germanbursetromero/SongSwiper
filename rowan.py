@@ -9,8 +9,6 @@ load_dotenv()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-print(client_id, client_secret)
-
 def get_token():
     auth_string = client_id + ":" + client_secret
     auth_bytes = auth_string.encode("utf-8")
@@ -37,9 +35,29 @@ def search_for_artist(token, artist_name):
 
     query_url = url + query
     result = get(query_url, headers=headers)
-    json_result = json.loads(result.content)
+    json_result = json.loads(result.content)["artists"]["items"]
+
+    if len(json_result) == 0:
+        print ("No artist with this name exists...")
+        return None
+    
+    return json_result[0]
+    
     print(json_result)
 
+def get_songs_by_artist(token, artist_id):
+    url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?country=US"
+    headers = get_auth_header(token)
+    result = get(url, headers=headers)
+    json_result = json.loads(result.content)["tracks"]
+    return json_result
+
 token = get_token()
-print(token)
-search_for_artist(token, "ACDC")
+result = search_for_artist(token, "Radiohead")
+print(result["name"])
+artist_id = result["id"]
+songs = get_songs_by_artist(token, artist_id)
+print(songs)
+
+for idx, song in enumerate(songs):
+    print(f"{idx + 1}. {song["name"]}")
