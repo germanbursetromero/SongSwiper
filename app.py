@@ -81,7 +81,7 @@ def getTopTracks():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 10)["items"]
         iteration += 1
         top_tracks += items
-        if(len(items) < 50):
+        if(len(items) < 10):
             break
     
     formatted_tracks = []
@@ -110,5 +110,5 @@ def create_spotify_oauth():
         client_id= "194564bfd0694b6c85aef9f8182616eb",
         client_secret= "bf2ca6fa80af4a5e86dff533018a79b7",
         redirect_uri=url_for('redirectPage', _external=True),
-        scope="user-library-read"
+        scope="user-library-read user-top-read"
     )
