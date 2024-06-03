@@ -19,6 +19,16 @@ app.secret_key = "8fhkslfmpio4pa98"
 app.config['SESSION_COOKIE_NAME'] = 'Beach Cookie'
 TOKEN_INFO = "token_info"
 
+class CustomCacheHandler(spotipy.cache_handler.CacheHandler):
+    def __init__(self):
+        self.token_info = None
+
+    def get_cached_token(self):
+        return session.get(TOKEN_INFO)
+
+    def save_token_to_cache(self, token_info):
+        session[TOKEN_INFO] = token_info
+
 @app.route('/')
 def login():
     sp_oauth = create_spotify_oauth()
@@ -116,7 +126,8 @@ def create_spotify_oauth():
         client_id= client_id,
         client_secret= client_secret,
         redirect_uri=url_for('redirectPage', _external=True),
-        scope="user-library-read user-top-read"
+        scope="user-library-read user-top-read",
+        cache_handler=CustomCacheHandler()
     )
 
 @app.route('/logout')
