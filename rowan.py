@@ -1,63 +1,125 @@
-import json
+# german's file
+
+from flask import Flask, request, url_for, session, redirect
 from dotenv import load_dotenv
 import os
-import base64
-from requests import post, get
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+import time
+import json
+
+app = Flask(__name__)
 
 load_dotenv()
 
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
+app.secret_key = "8fhkslfmpio4pa98"
+app.config['SESSION_COOKIE_NAME'] = 'Beach Cookie'
+TOKEN_INFO = "token_info"
+
+@app.route('/')
+def login():
+    sp_oauth = create_spotify_oauth()
+    auth_url = sp_oauth.get_authorize_url()
+    return redirect(auth_url)
+
+@app.route('/redirect')
+def redirectPage():
+    sp_oauth = create_spotify_oauth()
+    session.clear()
+    code = request.args.get('code')
+    token_info = sp_oauth.get_access_token(code)
+    session[TOKEN_INFO] = token_info
+    return redirect(url_for('chooseAction', _external=True))
+
+@app.route('/chooseAction')
+def chooseAction():
+    return """
+        <h1>Choose an action:</h1>
+        <ul>
+            <li><a href="/getTracks">View Saved Tracks</a></li>
+            <li><a href="/getTopTracks">View Top Tracks</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    """
+
+@app.route('/getTracks')
+def getTracks():
+    try:
+        token_info = get_token()
+    except:
+        print("User not logged in")
+        return redirect("/")
+    sp = spotipy.Spotify(auth=token_info["access_token"])
+    all_songs = []
+    iteration = 0
+    while True:
+        items = sp.current_user_saved_tracks(limit=50, offset=iteration * 50)["items"]
+        iteration += 1
+        all_songs += items
+        if(len(items) < 50):
+            break
+    
+    limited_songs = all_songs[:50]
+    formatted_songs = []
+
+    for song in limited_songs:
+        track = song['track']
+        track_name = track['name']
+        artists = ', '.join(artist['name'] for artist in track['artists'])
+        formatted_songs.append(f"{track_name} by {artists}")
+
+    return "<br>".join(formatted_songs)
+
+@app.route('/getTopTracks')
+def getTopTracks():
+    try:
+        token_info = get_token()
+    except:
+        print("User not logged in")
+        return redirect("/")
+    sp = spotipy.Spotify(auth=token_info["access_token"])
+    top_tracks = []
+    iteration = 0
+    while True:
+        items = sp.current_user_top_tracks(limit=10, offset=iteration * 10)["items"]
+        iteration += 1
+        top_tracks += items
+        if(len(items) < 10):
+            break
+    
+    formatted_tracks = []
+    for track in top_tracks:
+        track_name = track['name']
+        artists = ', '.join(artist['name'] for artist in track['artists'])
+        formatted_tracks.append(f"{track_name} by {artists}")
+
+    return "<br>".join(formatted_tracks)
+    
+
 def get_token():
-    auth_string = client_id + ":" + client_secret
-    auth_bytes = auth_string.encode("utf-8")
-    auth_base64 = str(base64.b64encode(auth_bytes), "utf-8")
+    token_info = session.get(TOKEN_INFO, None)
+    if not token_info:
+        raise "exception"
+    now = int(time.time())
 
-    url = "https://accounts.spotify.com/api/token"
-    headers = {
-        "Authorization": "Basic " + auth_base64,
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-    data = {"grant_type": "client_credentials"}
-    result = post(url, headers=headers, data=data)
-    json_result = json.loads(result.content)
-    token = json_result["access_token"]
-    return token
+    is_expired = token_info["expires_at"] - now < 60
+    if(is_expired):
+        sp_oauth = create_spotify_oauth()
+        token_info = sp_oauth.refresh_access_token(token_info["refresh_token"])
+    return token_info
 
-def get_auth_header(token):
-    return {"Authorization": "Bearer " + token}
+def create_spotify_oauth():
+    return SpotifyOAuth(
+        client_id= client_id,
+        client_secret= client_secret,
+        redirect_uri=url_for('redirectPage', _external=True),
+        scope="user-library-read user-top-read"
+    )
 
-def search_for_artist(token, artist_name):
-    url = "https://api.spotify.com/v1/search"
-    headers = get_auth_header(token)
-    query = f"?q={artist_name}&type=artist&limit = 1"
-
-    query_url = url + query
-    result = get(query_url, headers=headers)
-    json_result = json.loads(result.content)["artists"]["items"]
-
-    if len(json_result) == 0:
-        print ("No artist with this name exists...")
-        return None
-    
-    return json_result[0]
-    
-    print(json_result)
-
-def get_songs_by_artist(token, artist_id):
-    url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?country=US"
-    headers = get_auth_header(token)
-    result = get(url, headers=headers)
-    json_result = json.loads(result.content)["tracks"]
-    return json_result
-
-token = get_token()
-result = search_for_artist(token, "Radiohead")
-print(result["name"])
-artist_id = result["id"]
-songs = get_songs_by_artist(token, artist_id)
-print(songs)
-
-for idx, song in enumerate(songs):
-    print(f"{idx + 1}. {song["name"]}")
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('/'))

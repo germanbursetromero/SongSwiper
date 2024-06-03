@@ -41,6 +41,7 @@ def chooseAction():
         <ul>
             <li><a href="/getTracks">View Saved Tracks</a></li>
             <li><a href="/getTopTracks">View Top Tracks</a></li>
+            <li><a href="/logout">Logout</a></li>
         </ul>
     """
 
@@ -117,3 +118,8 @@ def create_spotify_oauth():
         redirect_uri=url_for('redirectPage', _external=True),
         scope="user-library-read user-top-read"
     )
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
