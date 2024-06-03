@@ -10,6 +10,11 @@ import json
 
 app = Flask(__name__)
 
+load_dotenv()
+
+client_id = os.getenv("CLIENT_ID")
+client_secret = os.getenv("CLIENT_SECRET")
+
 app.secret_key = "8fhkslfmpio4pa98"
 app.config['SESSION_COOKIE_NAME'] = 'Beach Cookie'
 TOKEN_INFO = "token_info"
@@ -107,8 +112,8 @@ def get_token():
 
 def create_spotify_oauth():
     return SpotifyOAuth(
-        client_id= "194564bfd0694b6c85aef9f8182616eb",
-        client_secret= "bf2ca6fa80af4a5e86dff533018a79b7",
+        client_id= client_id,
+        client_secret= client_secret,
         redirect_uri=url_for('redirectPage', _external=True),
         scope="user-library-read user-top-read"
     )
