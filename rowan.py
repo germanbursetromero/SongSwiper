@@ -119,7 +119,12 @@ def create_spotify_oauth():
         scope="user-library-read user-top-read"
     )
 
+# def get_recommendations(track_ids, artist_ids, limit=20):
+#     recommendations = sp.recommendations(seed_tracks=track_ids, seed_artists=artist_ids, limit=limit)
+#     return recommendations['tracks']
+
+
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('/'))
+    return redirect('/')
