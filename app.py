@@ -10,9 +10,24 @@ import json
 
 app = Flask(__name__)
 
+load_dotenv()
+
+client_id = os.getenv("CLIENT_ID")
+client_secret = os.getenv("CLIENT_SECRET")
+
 app.secret_key = "8fhkslfmpio4pa98"
 app.config['SESSION_COOKIE_NAME'] = 'Beach Cookie'
 TOKEN_INFO = "token_info"
+
+class CustomCacheHandler(spotipy.cache_handler.CacheHandler):
+    def __init__(self):
+        self.token_info = None
+
+    def get_cached_token(self):
+        return session.get(TOKEN_INFO)
+
+    def save_token_to_cache(self, token_info):
+        session[TOKEN_INFO] = token_info
 
 @app.route('/')
 def login():
@@ -36,6 +51,7 @@ def chooseAction():
         <ul>
             <li><a href="/getTracks">View Saved Tracks</a></li>
             <li><a href="/getTopTracks">View Top Tracks</a></li>
+            <li><a href="/logout">Logout</a></li>
         </ul>
     """
 
@@ -81,7 +97,7 @@ def getTopTracks():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 10)["items"]
         iteration += 1
         top_tracks += items
-        if(len(items) < 50):
+        if(len(items) < 10):
             break
     
     formatted_tracks = []
@@ -107,8 +123,14 @@ def get_token():
 
 def create_spotify_oauth():
     return SpotifyOAuth(
-        client_id= "194564bfd0694b6c85aef9f8182616eb",
-        client_secret= "bf2ca6fa80af4a5e86dff533018a79b7",
+        client_id= client_id,
+        client_secret= client_secret,
         redirect_uri=url_for('redirectPage', _external=True),
-        scope="user-library-read"
+        scope="user-library-read user-top-read",
+        cache_handler=CustomCacheHandler()
     )
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
