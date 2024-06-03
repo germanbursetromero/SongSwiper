@@ -51,6 +51,7 @@ def chooseAction():
         <ul>
             <li><a href="/getTracks">View Saved Tracks</a></li>
             <li><a href="/getTopTracks">View Top Tracks</a></li>
+            <li><a href="/getRecommendations">Get Recommendations</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
     """
@@ -107,6 +108,40 @@ def getTopTracks():
         formatted_tracks.append(f"{track_name} by {artists}")
 
     return "<br>".join(formatted_tracks)
+
+@app.route('/getRecommendations')
+def getRecommendations():
+    try:
+        token_info = get_token()
+    except:
+        print("User not logged in")
+        return redirect("/")
+    sp = spotipy.Spotify(auth=token_info["access_token"])
+
+    # Get user's top tracks and artists
+    top_tracks = get_top_tracks(sp)
+    top_artists = get_top_artists(sp)
+
+    # Get song recommendations
+    recommended_tracks = get_recommendations(sp, top_tracks[:5], top_artists[:5])
+
+    # Format the recommended songs
+    recommended_songs = [{'name': track['name'], 'artist': track['artists'][0]['name']} for track in recommended_tracks]
+    formatted_recommendations = [f"{song['name']} by {song['artist']}" for song in recommended_songs]
+
+    return "<br>".join(formatted_recommendations)
+
+def get_top_tracks(sp, time_range='medium_term', limit=20):
+    top_tracks = sp.current_user_top_tracks(time_range=time_range, limit=limit)
+    return [track['id'] for track in top_tracks['items']]
+
+def get_top_artists(sp, time_range='medium_term', limit=20):
+    top_artists = sp.current_user_top_artists(time_range=time_range, limit=limit)
+    return [artist['id'] for artist in top_artists['items']]
+
+def get_recommendations(sp, track_ids, artist_ids, limit=20):
+    recommendations = sp.recommendations(seed_tracks=track_ids, seed_artists=artist_ids, limit=limit)
+    return recommendations['tracks']
     
 
 def get_token():
