@@ -1,11 +1,19 @@
 # german's file
 
-from dotenv import load_dotenv
-import os
+from flask import Flask, request, url_for, session, redirect
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
-load_dotenv()
 
-client_id = os.getenv("CLIENT_ID")
-client_secret = os.getenv("CLIENT_SECRET")
+app = Flask(__name__)
 
-print(client_id, client_secret)
+app.secret_key = "8fhkslfmpio4pa98"
+app.config['SESSION_COOKIE_NAME'] = 'Beach Cookie'
+
+@app.route('/')
+def index():
+    return "Song Swiper"
+
+@app.route('/getTracks')
+def getTracks():
+    return "User top songs"
