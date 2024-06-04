@@ -149,7 +149,6 @@ def getRecommendations():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-
         if(iteration >= 50):
             break
 
