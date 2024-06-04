@@ -67,7 +67,7 @@ def getTracks():
         items = sp.current_user_saved_tracks(limit=50, offset=iteration * 50)["items"]
         iteration += 1
         all_songs += items
-        if(len(items) > 50):
+        if(iteration >= 50):
             break
     
     limited_songs = all_songs[:50]
@@ -95,11 +95,7 @@ def getTopTracks():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-<<<<<<< HEAD
-        if(len(top_tracks) > 50):
-=======
-        if(len(top_tracks) < 10):
->>>>>>> 743e0d08d4727798bff0d78c50353f73597733bc
+        if(iteration >= 50):
             break
     
     formatted_tracks = []
@@ -126,7 +122,7 @@ def getRecommendations():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-        if(len(top_tracks) > 50):
+        if(iteration >= 50):
             break
 
     top_track_ids = [track['id'] for track in top_tracks]
