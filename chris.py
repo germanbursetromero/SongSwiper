@@ -6,6 +6,11 @@ import base64
 import requests
 from requests import post
 import json 
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+import time 
+from flask import Flask, request, url_for, session, redirect
+
 
 
 load_dotenv()
@@ -16,25 +21,20 @@ client_secret = os.getenv("CLIENT_SECRET")
 #print (client_id)
 #print (client_secret)
 
+def get_token():
+    token_info = session.get(TOKEN_INFO,None)
+    if not token_info:
+        raise "exception"
+    now = int(time.time())
 
-def getToken():
-    auth_string = client_id + ":" + client_secret
-    auth_bytes = auth_string.encode("utf-8")
-    auth_base64 = str(base64.b64encode(auth_bytes), "utf-8")
-    
-    url = "https://accounts.spotify.com/api/token"
-    headers = {
-        "Authorization": "Basic" + auth_base64,
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-    data = {"grant_type": "client_credentials"}
-    result = post(url, headers = headers, data = data)
-    json_result = json.loads(result.content)
-    token = json_result["access_token"]
-    return token
+    is_expired = token_info["expires_at"] - now < 60
+    if(is_expired):
+        sp_oauth = create_spotify_oauth()
+        token_info = sp_oauth.refresh_access_token(token_info["refresh_tokem"])
+    return token_info
 
-token = getToken()
-print (token)
+token = get_token()
+print(token)
 
 
 
