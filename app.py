@@ -1,5 +1,3 @@
-# german's file
-
 from flask import Flask, request, url_for, session, redirect
 from dotenv import load_dotenv
 import os
@@ -52,7 +50,6 @@ def chooseAction():
             <li><a href="/getTracks">View Saved Tracks</a></li>
             <li><a href="/getTopTracks">View Top Tracks</a></li>
             <li><a href="/getRecommendations">Get Recommendations</a></li>
-            <li><a href="/logout">Logout</a></li>
         </ul>
     """
 
@@ -70,7 +67,7 @@ def getTracks():
         items = sp.current_user_saved_tracks(limit=50, offset=iteration * 50)["items"]
         iteration += 1
         all_songs += items
-        if(len(items) < 50):
+        if(len(items) > 50):
             break
     
     limited_songs = all_songs[:50]
@@ -95,10 +92,10 @@ def getTopTracks():
     top_tracks = []
     iteration = 0
     while True:
-        items = sp.current_user_top_tracks(limit=10, offset=iteration * 10)["items"]
+        items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-        if(len(top_tracks) > 10):
+        if(len(top_tracks) > 50):
             break
     
     formatted_tracks = []
@@ -122,10 +119,10 @@ def getRecommendations():
     top_tracks = []
     iteration = 0
     while True:
-        items = sp.current_user_top_tracks(limit=10, offset=iteration * 10)["items"]
+        items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-        if(len(top_tracks) > 10):
+        if(len(top_tracks) > 50):
             break
 
     top_track_ids = [track['id'] for track in top_tracks]
@@ -161,8 +158,3 @@ def create_spotify_oauth():
         scope="user-library-read user-top-read",
         cache_handler=CustomCacheHandler()
     )
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
