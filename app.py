@@ -95,7 +95,11 @@ def getTopTracks():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
+<<<<<<< HEAD
         if(len(top_tracks) > 50):
+=======
+        if(len(top_tracks) < 10):
+>>>>>>> 743e0d08d4727798bff0d78c50353f73597733bc
             break
     
     formatted_tracks = []
