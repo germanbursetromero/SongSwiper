@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Choose an action:</h2>
+    <ul>
+        <li><a href="{{ url_for('getTracks') }}">View Saved Tracks</a></li>
+        <li><a href="{{ url_for('getTopTracks') }}">View Top Tracks</a></li>
+        <li><a href="{{ url_for('getRecommendations') }}">Get Recommendations</a></li>
+        <li><a href="{{ url_for('swipeRecommendations') }}">Swipe Recommendations</a></li>
+    </ul>
+{% endblock %}
