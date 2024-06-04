@@ -6,6 +6,8 @@ from spotipy.oauth2 import SpotifyOAuth
 import time
 import json
 
+########################## SETUP AND OAUTH ##########################
+
 app = Flask(__name__)
 
 load_dotenv()
@@ -26,6 +28,27 @@ class CustomCacheHandler(spotipy.cache_handler.CacheHandler):
 
     def save_token_to_cache(self, token_info):
         session[TOKEN_INFO] = token_info
+
+def get_token():
+    token_info = session.get(TOKEN_INFO, None)
+    if not token_info:
+        raise "exception"
+    now = int(time.time())
+
+    is_expired = token_info["expires_at"] - now < 60
+    if(is_expired):
+        sp_oauth = create_spotify_oauth()
+        token_info = sp_oauth.refresh_access_token(token_info["refresh_token"])
+    return token_info
+
+def create_spotify_oauth():
+    return SpotifyOAuth(
+        client_id= client_id,
+        client_secret= client_secret,
+        redirect_uri=url_for('redirectPage', _external=True),
+        scope="user-library-read user-top-read playlist-modify-public",
+        cache_handler=CustomCacheHandler()
+    )
 
 @app.route('/')
 def login():
@@ -53,6 +76,8 @@ def chooseAction():
             <li><a href="/createPlaylistForm">Create Playlist</a></li>
         </ul>
     """
+
+########################## APP FUNCTIONS ##########################
 
 @app.route('/getTracks')
 def getTracks():
@@ -96,18 +121,9 @@ def getTopTracks():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-<<<<<<< HEAD
+
         if(iteration >= 50):
-=======
-        if(iteration>=50):
             break
-        
-<<<<<<< HEAD
-            
-=======
->>>>>>> 90141e2b31007ada7e399579732322efd98d8cd8
-            break
->>>>>>> f14cdc36e02cd5fa3fa95dd2407a7f650571364c
     
     formatted_tracks = []
     for track in top_tracks:
@@ -133,11 +149,8 @@ def getRecommendations():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-<<<<<<< HEAD
-        if(iteration) > 50:
-=======
+
         if(iteration >= 50):
->>>>>>> f14cdc36e02cd5fa3fa95dd2407a7f650571364c
             break
 
     top_track_ids = [track['id'] for track in top_tracks]
@@ -152,27 +165,6 @@ def getRecommendations():
     
     return "<br>".join(formatted_recommendations)
     
-
-def get_token():
-    token_info = session.get(TOKEN_INFO, None)
-    if not token_info:
-        raise "exception"
-    now = int(time.time())
-
-    is_expired = token_info["expires_at"] - now < 60
-    if(is_expired):
-        sp_oauth = create_spotify_oauth()
-        token_info = sp_oauth.refresh_access_token(token_info["refresh_token"])
-    return token_info
-
-def create_spotify_oauth():
-    return SpotifyOAuth(
-        client_id= client_id,
-        client_secret= client_secret,
-        redirect_uri=url_for('redirectPage', _external=True),
-        scope="user-library-read user-top-read playlist-modify-public",
-        cache_handler=CustomCacheHandler()
-    )
 @app.route('/createPlaylistForm')
 def createPlaylistForm():
     form_html = """
