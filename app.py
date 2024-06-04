@@ -1,10 +1,12 @@
-from flask import Flask, request, url_for, session, redirect
+from flask import Flask, request, url_for, session, redirect, render_template_string
 from dotenv import load_dotenv
 import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import time
 import json
+
+########################## SETUP AND OAUTH ##########################
 
 app = Flask(__name__)
 
@@ -26,6 +28,27 @@ class CustomCacheHandler(spotipy.cache_handler.CacheHandler):
 
     def save_token_to_cache(self, token_info):
         session[TOKEN_INFO] = token_info
+
+def get_token():
+    token_info = session.get(TOKEN_INFO, None)
+    if not token_info:
+        raise "exception"
+    now = int(time.time())
+
+    is_expired = token_info["expires_at"] - now < 60
+    if(is_expired):
+        sp_oauth = create_spotify_oauth()
+        token_info = sp_oauth.refresh_access_token(token_info["refresh_token"])
+    return token_info
+
+def create_spotify_oauth():
+    return SpotifyOAuth(
+        client_id= client_id,
+        client_secret= client_secret,
+        redirect_uri=url_for('redirectPage', _external=True),
+        scope="user-library-read user-top-read playlist-modify-public",
+        cache_handler=CustomCacheHandler()
+    )
 
 @app.route('/')
 def login():
@@ -50,8 +73,11 @@ def chooseAction():
             <li><a href="/getTracks">View Saved Tracks</a></li>
             <li><a href="/getTopTracks">View Top Tracks</a></li>
             <li><a href="/getRecommendations">Get Recommendations</a></li>
+            <li><a href="/createPlaylistForm">Create Playlist</a></li>
         </ul>
     """
+
+########################## APP FUNCTIONS ##########################
 
 @app.route('/getTracks')
 def getTracks():
@@ -67,7 +93,7 @@ def getTracks():
         items = sp.current_user_saved_tracks(limit=50, offset=iteration * 50)["items"]
         iteration += 1
         all_songs += items
-        if(len(items) > 50):
+        if(iteration >= 50):
             break
     
     limited_songs = all_songs[:50]
@@ -95,9 +121,8 @@ def getTopTracks():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-        if(iteration>=50):
-            break
-        
+
+        if(iteration >= 50):
             break
     
     formatted_tracks = []
@@ -124,7 +149,7 @@ def getRecommendations():
         items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
         iteration += 1
         top_tracks += items
-        if(len(top_tracks) > 50):
+        if(iteration >= 50):
             break
 
     top_track_ids = [track['id'] for track in top_tracks]
@@ -139,24 +164,50 @@ def getRecommendations():
     
     return "<br>".join(formatted_recommendations)
     
+@app.route('/createPlaylistForm')
+def createPlaylistForm():
+    form_html = """
+        <h1>Create a New Playlist</h1>
+        <form method="POST" action="/createPlaylist">
+            <label for="name">Playlist Name:</label>
+            <input type="text" id="name" name="name" required><br>
+            
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea><br>
+            
+            <label for="public">Public:</label>
+            <input type="checkbox" id="public" name="public"><br>
+            
+            <label for="collaborative">Collaborative:</label>
+            <input type="checkbox" id="collaborative" name="collaborative"><br>
+            
+            <button type="submit">Create Playlist</button>
+        </form>
+    """
+    return render_template_string(form_html)
 
-def get_token():
-    token_info = session.get(TOKEN_INFO, None)
-    if not token_info:
-        raise "exception"
-    now = int(time.time())
+@app.route('/createPlaylist', methods=['POST']) 
+def createPlaylist():
+    try:
+        token_info = get_token()
+    except:
+        print("User not logged in")
+        return redirect("/")
 
-    is_expired = token_info["expires_at"] - now < 60
-    if(is_expired):
-        sp_oauth = create_spotify_oauth()
-        token_info = sp_oauth.refresh_access_token(token_info["refresh_token"])
-    return token_info
+    sp = spotipy.Spotify(auth=token_info["access_token"])
+    user_id = sp.me()['id']
 
-def create_spotify_oauth():
-    return SpotifyOAuth(
-        client_id= client_id,
-        client_secret= client_secret,
-        redirect_uri=url_for('redirectPage', _external=True),
-        scope="user-library-read user-top-read",
-        cache_handler=CustomCacheHandler()
+    playlist_name = request.form['name']
+    playlist_description = request.form['description']
+    is_public = 'public' in request.form
+    is_collaborative = 'collaborative' in request.form
+
+    sp.user_playlist_create(
+        user=user_id, 
+        name=playlist_name, 
+        public=is_public, 
+        collaborative=is_collaborative, 
+        description=playlist_description
     )
+
+    return "Playlist created successfully!"
