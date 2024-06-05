@@ -9,6 +9,10 @@
     height: 100vh;
     position: relative;
     overflow-y: auto;
+<<<<<<< HEAD
+    background: linear-gradient(to bottom, #3ae267, #000000)
+}
+=======
     background: #171717;
 }
 
@@ -49,6 +53,7 @@ nav h1{
     text-align: center;
     color: #ffffff;
 }
+<<<<<<< HEAD
 
 .spot-button{
     display: inline-block;
@@ -64,3 +69,6 @@ nav h1{
 .spot-button:hover{
     background-color: #1ed760;
 }
+=======
+>>>>>>> d70d9f1ab99b1ce2829602a63fc47ce899d4dc30
+>>>>>>> 63eb8d0632e1daa6506ed2b267629a20fe0b7b36
