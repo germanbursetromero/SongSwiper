@@ -176,7 +176,7 @@ def swipeRecommendations():
         top_tracks = []
         iteration = 0
         while True:
-            items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
+            items = sp.current_user_top_tracks(limit=1)["items"]
             iteration += 1
             top_tracks += items
             if iteration >= 50 or len(items) == 0:
