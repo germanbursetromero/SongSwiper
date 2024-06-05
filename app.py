@@ -6,6 +6,9 @@ from spotipy.oauth2 import SpotifyOAuth
 import time
 import json
 
+vairable = 21
+print(str(vairable))
+
 app = Flask(__name__)
 
 load_dotenv()
@@ -170,28 +173,31 @@ def swipeRecommendations():
         print("User not logged in")
         return redirect("/")
     
-    sp = spotipy.Spotify(auth=token_info["access_token"])
-    
-    top_tracks = []
-    iteration = 0
-    while True:
-        items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
-        iteration += 1
-        top_tracks += items
-        if(iteration >= 50):
-            break
+    if 'recommendations' not in session:
+        sp = spotipy.Spotify(auth=token_info["access_token"])
+        
+        top_tracks = []
+        iteration = 0
+        while True:
+            items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
+            iteration += 1
+            top_tracks += items
+            if iteration >= 50 or len(items) == 0:
+                break
 
-    top_track_ids = [track['id'] for track in top_tracks]
+        top_track_ids = [track['id'] for track in top_tracks]
+        
+        recommendations = sp.recommendations(seed_tracks=top_track_ids[:5], limit=20)["tracks"]
+        session['recommendations'] = recommendations
     
-    recommendations = sp.recommendations(seed_tracks=top_track_ids[:5], limit=20)["tracks"]
-    
-    return render_template('swipe_recommendations.html', recommendations=recommendations)
+    return render_template('swipe_recommendations.html', recommendations=session['recommendations'])
 
 @app.route('/swipeAction', methods=['POST'])
 def swipeAction():
     if request.method == 'POST':
         action = request.form['action']
         track_uri = request.form['track_uri']
+        
         if action == 'Like':
             try:
                 token_info = get_token()
@@ -204,8 +210,16 @@ def swipeAction():
             if playlist_id:
                 sp.user_playlist_add_tracks(user=sp.me()['id'], playlist_id=playlist_id, tracks=[track_uri])
             print(f"Liked: {track_uri}")
+        
         elif action == 'Dislike':
             print(f"Disliked: {track_uri}")
+        
+        # Ensure 'recommendations' key exists in session
+        if 'recommendations' in session:
+            session['recommendations'] = [track for track in session['recommendations'] if track['uri'] != track_uri]
+        else:
+            print("No recommendations in session")
+
     return redirect('/swipeRecommendations')
 
 def get_token():
