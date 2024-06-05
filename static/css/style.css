@@ -9,10 +9,6 @@
     height: 100vh;
     position: relative;
     overflow-y: auto;
-<<<<<<< HEAD
-    background: linear-gradient(to bottom, #3ae267, #000000)
-}
-=======
     background: #171717;
 }
 
@@ -53,7 +49,6 @@ nav h1{
     text-align: center;
     color: #ffffff;
 }
-<<<<<<< HEAD
 
 .spot-button{
     display: inline-block;
@@ -66,9 +61,78 @@ nav h1{
     transition: background-color 0.3s ease;
     margin-bottom: 5px;
 }
+
 .spot-button:hover{
     background-color: #1ed760;
 }
-=======
->>>>>>> d70d9f1ab99b1ce2829602a63fc47ce899d4dc30
->>>>>>> 63eb8d0632e1daa6506ed2b267629a20fe0b7b36
+
+.create-playlist {
+    background-color: #282828; /* Slightly lighter dark background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+    width: 100%;
+    max-width: 400px; /* Limit the width */
+    box-sizing: border-box;
+    text-align: center;
+    align-self: center;
+}
+
+.create-playlist h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.create-playlist label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.create-playlist input[type="text"],
+.create-playlist textarea {
+    width: 100%;
+    max-width: 350px; /* Limit the width */
+    padding: 10px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3e3e3e;
+    color: #ffffff;
+    box-sizing: border-box;
+}
+
+.create-playlist input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.create-playlist button {
+    width: 100%;
+    max-width: 350px; /* Limit the width */
+    padding: 10px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #1DB954; /* Spotify green */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.create-playlist button:hover {
+    background-color: #1ed760; /* Slightly lighter green on hover */
+}
+
+.song-container{
+    flex: 1;
+    text-align: center;
+    color: #ffffff;
+}
+
+.song-container h2{
+    flex: 1;
+    text-align: center;
+    color: #ffffff;
+}

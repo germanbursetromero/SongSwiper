@@ -1,32 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="create-playlist">
     <h2>Create a New Playlist</h2>
-        <form method="POST" action="{{ url_for('createPlaylist') }}">
-            <label for="name">Playlist Name:</label>
-            <input type="text" id="name" name="name" required><br>
-            
-            <label for="description">Description:</label>
-            <textarea id="description" name="description"></textarea><br>
-            
-            <label for="public">Public:</label>
-            <input type="checkbox" id="public" name="public"><br>
-            
-            <label for="collaborative">Collaborative:</label>
-            <input type="checkbox" id="collaborative" name="collaborative"><br>
-            
-            <button type="submit">Create Playlist</button>
-        </form>
+    <form method="POST" action="{{ url_for('createPlaylist') }}">
+        <label for="name">Playlist Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea><br>
+        
+        <label for="public">Public:</label>
+        <input type="checkbox" id="public" name="public"><br>
+        
+        <label for="collaborative">Collaborative:</label>
+        <input type="checkbox" id="collaborative" name="collaborative"><br>
+        
+        <button type="submit">Create Playlist</button>
+    </form>
+</div>
     <h2>Swipe Recommendations</h2>
     {% for track in recommendations %}
-    <div>
-        <h3>{{ track.name }} by {% for artist in track.artists %}{{ artist.name }}{% if not loop.last %}, {% endif %}{% endfor %}</h3>
-        <form method="post" action="{{ url_for('swipeAction') }}">
-            <input type="hidden" name="track_uri" value="{{ track.uri }}">
-            <button type="submit" name="action" value="Like">Like</button>
-            <button type="submit" name="action" value="Dislike">Dislike</button>
-        </form>
+    <div class="song-container">
+        <h2 id="song-title">{{ current_song['name'] }}</h2>
+        <p id="song-artist">{{ current_song['artists'][0]['name'] }}</p>
+        <audio controls id="song-preview">
+            <source src="{{ current_song['preview_url'] }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <div class="buttons">
+            <button id="like-button">Like</button>
+            <button id="dislike-button">Dislike</button>
+        </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     {% endfor %}
 </div>
 {% endblock %}

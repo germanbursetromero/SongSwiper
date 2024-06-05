@@ -1,4 +1,4 @@
-from flask import Flask, request, url_for, session, redirect, render_template, render_template_string
+from flask import Flask, request, url_for, session, redirect, render_template, render_template_string, jsonify
 from dotenv import load_dotenv
 import os
 import spotipy
@@ -172,52 +172,52 @@ def swipeRecommendations():
     
     if 'recommendations' not in session:
         sp = spotipy.Spotify(auth=token_info["access_token"])
-        
         top_tracks = []
         iteration = 0
         while True:
-            items = sp.current_user_top_tracks(limit=1)["items"]
+            items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
             iteration += 1
             top_tracks += items
             if iteration >= 50 or len(items) == 0:
                 break
 
         top_track_ids = [track['id'] for track in top_tracks]
-        
         recommendations = sp.recommendations(seed_tracks=top_track_ids[:5], limit=20)["tracks"]
         session['recommendations'] = recommendations
+        session['current_index'] = 0
     
-    return render_template('swipe_recommendations.html', recommendations=session['recommendations'])
+    current_song = session['recommendations'][session['current_index']]
+    return render_template('swipe_recommendations.html', current_song=current_song)
 
 @app.route('/swipeAction', methods=['POST'])
 def swipeAction():
-    if request.method == 'POST':
-        action = request.form['action']
-        track_uri = request.form['track_uri']
-        
-        if action == 'Like':
-            try:
-                token_info = get_token()
-            except:
-                print("User not logged in")
-                return redirect("/")
-            
-            sp = spotipy.Spotify(auth=token_info["access_token"])
-            playlist_id = session.get('playlist_id')
-            if playlist_id:
-                sp.user_playlist_add_tracks(user=sp.me()['id'], playlist_id=playlist_id, tracks=[track_uri])
-            print(f"Liked: {track_uri}")
-        
-        elif action == 'Dislike':
-            print(f"Disliked: {track_uri}")
-        
-        # Ensure 'recommendations' key exists in session
-        if 'recommendations' in session:
-            session['recommendations'] = [track for track in session['recommendations'] if track['uri'] != track_uri]
-        else:
-            print("No recommendations in session")
+    data = request.json
+    action = data.get('action')
+    
+    if action not in ['like', 'dislike']:
+        return jsonify({'error': 'Invalid action'}), 400
+    
+    try:
+        token_info = get_token()
+    except:
+        print("User not logged in")
+        return redirect("/")
+    
+    sp = spotipy.Spotify(auth=token_info["access_token"])
+    
+    if action == 'like':
+        track_uri = session['recommendations'][session['current_index']]['uri']
+        playlist_id = session.get('playlist_id')
+        if playlist_id:
+            sp.user_playlist_add_tracks(user=sp.me()['id'], playlist_id=playlist_id, tracks=[track_uri])
+        print(f"Liked: {track_uri}")
 
-    return redirect('/swipeRecommendations')
+    session['current_index'] += 1
+    if session['current_index'] >= len(session['recommendations']):
+        session['current_index'] = 0  # Reset or handle end of list case
+    
+    next_song = session['recommendations'][session['current_index']]
+    return jsonify(next_song)
 
 def get_token():
     token_info = session.get(TOKEN_INFO, None)
