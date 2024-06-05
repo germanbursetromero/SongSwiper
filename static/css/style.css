@@ -9,5 +9,55 @@
     height: 100vh;
     position: relative;
     overflow-y: auto;
-    background: linear-gradient(to bottom, #3ae267, #000000)
+nav{
+    width: 80%;
+    position: sticky;
+    margin:20px auto;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+}
+
+nav h1{
+    flex: 1;
+    text-align: left;
+    color: white;
+}
+
+.nav-links{
+    flex: 1;
+    text-align: right;
+    margin-right: 30px;
+}
+
+.nav-links ul li{
+    list-style: none;
+    display: inline-block;
+    margin: 0 20px;
+}
+
+.nav-links ul li a{
+    color: #fff;
+    text-decoration: none;
+}
+
+.choose-action{
+    flex: 1;
+    text-align: center;
+    color: #ffffff;
+}
+.spot-button{
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #1DB954; /* Spotify green */
+    text-decoration: none;
+    border-radius: 50px; /* Rounded corners */
+    transition: background-color 0.3s ease;
+    margin-bottom: 5px;
+}
+.spot-button:hover{
+    background-color: #1ed760;
+}
 }

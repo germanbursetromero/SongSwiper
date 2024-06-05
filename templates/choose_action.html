@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<div class="choose-action">
     <h2>Choose an action:</h2>
     <ul>
-        <li><a href="{{ url_for('getTracks') }}">View Saved Tracks</a></li>
-        <li><a href="{{ url_for('getTopTracks') }}">View Top Tracks</a></li>
-        <li><a href="{{ url_for('getRecommendations') }}">Get Recommendations</a></li>
-        <li><a href="{{ url_for('swipeRecommendations') }}">Swipe Recommendations</a></li>
+        <li><a href="{{ url_for('getTracks') }}" class="spot-button">View Saved Tracks</a></li>
+        <li><a href="{{ url_for('getTopTracks') }}" class="spot-button">View Top Tracks</a></li>
+        <li><a href="{{ url_for('getRecommendations') }}" class="spot-button">Get Recommendations</a></li>
+        <li><a href="{{ url_for('swipeRecommendations') }}" class="spot-button">Swipe Recommendations</a></li>
+        </div>
     </ul>
+</div>
 {% endblock %}
