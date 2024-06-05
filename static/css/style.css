@@ -49,3 +49,18 @@ nav h1{
     text-align: center;
     color: #ffffff;
 }
+
+.spot-button{
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #1DB954; /* Spotify green */
+    text-decoration: none;
+    border-radius: 50px; /* Rounded corners */
+    transition: background-color 0.3s ease;
+    margin-bottom: 5px;
+}
+.spot-button:hover{
+    background-color: #1ed760;
+}
