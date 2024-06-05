@@ -10,11 +10,15 @@
         <label for="description">Description:</label>
         <textarea id="description" name="description"></textarea><br>
         
-        <label for="public">Public:</label>
-        <input type="checkbox" id="public" name="public"><br>
+        <div class="switch">
+            <input type="checkbox" id="public" name="public">
+            <label for="public" class="switch-label">Public</label>
+        </div>
         
-        <label for="collaborative">Collaborative:</label>
-        <input type="checkbox" id="collaborative" name="collaborative"><br>
+        <div class="switch">
+            <input type="checkbox" id="collaborative" name="collaborative">
+            <label for="collaborative" class="switch-label">Collaborative</label>
+        </div>
         
         <button type="submit">Create Playlist</button>
     </form>

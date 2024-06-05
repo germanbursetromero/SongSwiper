@@ -9,22 +9,9 @@
     height: 100vh;
     position: relative;
     overflow-y: auto;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    background: linear-gradient(to bottom, #3ae267, #000000)
-}
-=======
->>>>>>> 70c4eda464275f514a5d0062f0a7d10438b33983
->>>>>>> 61c05466d8ec4890beb2a5b9fffd65a0a0bcfead
     background: #171717;
 }
 
->>>>>>> 7bc27af7fc77c642dbebbd263eaf5504810268c8
 nav{
     width: 80%;
     position: sticky;
@@ -62,16 +49,7 @@ nav h1{
     text-align: center;
     color: #ffffff;
 }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 61c05466d8ec4890beb2a5b9fffd65a0a0bcfead
 
->>>>>>> 7bc27af7fc77c642dbebbd263eaf5504810268c8
 .spot-button{
     display: inline-block;
     padding: 10px 20px;
@@ -87,7 +65,6 @@ nav h1{
 .spot-button:hover{
     background-color: #1ed760;
 }
-<<<<<<< HEAD
 
 .create-playlist {
     background-color: #282828; /* Slightly lighter dark background */
@@ -95,6 +72,7 @@ nav h1{
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
     width: 100%;
+    margin: auto;
     max-width: 400px; /* Limit the width */
     box-sizing: border-box;
     text-align: center;
@@ -105,12 +83,14 @@ nav h1{
     margin-bottom: 20px;
     font-size: 24px;
     text-align: center;
+    color: #ffffff;
 }
 
 .create-playlist label {
     display: block;
     margin-bottom: 8px;
     font-size: 14px;
+    color: #ffffff;
 }
 
 .create-playlist input[type="text"],
@@ -126,8 +106,53 @@ nav h1{
     box-sizing: border-box;
 }
 
-.create-playlist input[type="checkbox"] {
-    margin-right: 10px;
+.switch {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 350px; /* Limit the width */
+}
+
+.switch input[type="checkbox"] {
+    display: none;
+}
+
+.switch-label {
+    margin-left: 10px;
+    position: relative;
+}
+
+.switch input[type="checkbox"] + .switch-label::before {
+    content: '';
+    display: inline-block;
+    width: 35px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px;
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.switch input[type="checkbox"] + .switch-label::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 0px;
+    transition: transform 0.3s ease;
+}
+
+.switch input[type="checkbox"]:checked + .switch-label::before {
+    background-color: #1DB954; /* Spotify green */
+}
+
+.switch input[type="checkbox"]:checked + .switch-label::after {
+    transform: translateX(20px);
 }
 
 .create-playlist button {
@@ -159,13 +184,3 @@ nav h1{
     text-align: center;
     color: #ffffff;
 }
-=======
-<<<<<<< HEAD
-}
-=======
-=======
->>>>>>> d70d9f1ab99b1ce2829602a63fc47ce899d4dc30
->>>>>>> 63eb8d0632e1daa6506ed2b267629a20fe0b7b36
->>>>>>> 70c4eda464275f514a5d0062f0a7d10438b33983
->>>>>>> 7bc27af7fc77c642dbebbd263eaf5504810268c8
->>>>>>> 61c05466d8ec4890beb2a5b9fffd65a0a0bcfead
