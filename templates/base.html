@@ -4,18 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotify App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Spotify App</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/chooseAction">Choose Action</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="main">
+        <header>
+            <h1>Spotify App</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/chooseAction">Choose Action</a></li>
+                </ul>
+            </nav>
+        </header>
+    </div>
     <main>
         {% block content %}{% endblock %}
     </main>
