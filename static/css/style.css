@@ -9,9 +9,22 @@
     height: 100vh;
     position: relative;
     overflow-y: auto;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    background: linear-gradient(to bottom, #3ae267, #000000)
+}
+=======
+>>>>>>> 70c4eda464275f514a5d0062f0a7d10438b33983
+>>>>>>> 61c05466d8ec4890beb2a5b9fffd65a0a0bcfead
     background: #171717;
 }
 
+>>>>>>> 7bc27af7fc77c642dbebbd263eaf5504810268c8
 nav{
     width: 80%;
     position: sticky;
@@ -49,7 +62,16 @@ nav h1{
     text-align: center;
     color: #ffffff;
 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 61c05466d8ec4890beb2a5b9fffd65a0a0bcfead
 
+>>>>>>> 7bc27af7fc77c642dbebbd263eaf5504810268c8
 .spot-button{
     display: inline-block;
     padding: 10px 20px;
@@ -65,6 +87,7 @@ nav h1{
 .spot-button:hover{
     background-color: #1ed760;
 }
+<<<<<<< HEAD
 
 .create-playlist {
     background-color: #282828; /* Slightly lighter dark background */
@@ -136,3 +159,13 @@ nav h1{
     text-align: center;
     color: #ffffff;
 }
+=======
+<<<<<<< HEAD
+}
+=======
+=======
+>>>>>>> d70d9f1ab99b1ce2829602a63fc47ce899d4dc30
+>>>>>>> 63eb8d0632e1daa6506ed2b267629a20fe0b7b36
+>>>>>>> 70c4eda464275f514a5d0062f0a7d10438b33983
+>>>>>>> 7bc27af7fc77c642dbebbd263eaf5504810268c8
+>>>>>>> 61c05466d8ec4890beb2a5b9fffd65a0a0bcfead
