@@ -34,7 +34,7 @@ class CustomCacheHandler(spotipy.cache_handler.CacheHandler):
 def login():
     sp_oauth = create_spotify_oauth()
     auth_url = sp_oauth.get_authorize_url()
-    return render_template('login.html')
+    return render_template('login.html', auth_url=auth_url)
 
 @app.route('/redirect')
 def redirectPage():
