@@ -6,9 +6,6 @@ from spotipy.oauth2 import SpotifyOAuth
 import time
 import json
 
-vairable = 21
-print(str(vairable))
-
 app = Flask(__name__)
 
 load_dotenv()
