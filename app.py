@@ -34,7 +34,7 @@ class CustomCacheHandler(spotipy.cache_handler.CacheHandler):
 def login():
     sp_oauth = create_spotify_oauth()
     auth_url = sp_oauth.get_authorize_url()
-    return render_template('login.html', auth_url=auth_url)
+    return redirect(auth_url)
 
 @app.route('/redirect')
 def redirectPage():
@@ -42,7 +42,7 @@ def redirectPage():
     session.clear()
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
-    session[TOKEN_INFO] = token_info
+    session['token_info'] = token_info
     return redirect(url_for('chooseAction', _external=True))
 
 @app.route('/chooseAction')
