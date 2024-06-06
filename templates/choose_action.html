@@ -6,14 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<div class="choose-action">
-    <h2>Choose an action:</h2>
-    <ul>
-        <li><a href="{{ url_for('getTracks') }}" class="spot-button">View Saved Tracks</a></li>
-        <li><a href="{{ url_for('getTopTracks') }}" class="spot-button">View Top Tracks</a></li>
-        <li><a href="{{ url_for('getRecommendations') }}" class="spot-button">Get Recommendations</a></li>
-        <li><a href="{{ url_for('showCreatePlaylist') }}" class="spot-button">Start Swiping</a></li>
-        </div>
-    </ul>
+<div class="container">
+    <div class="button-left">
+        <a href="{{ url_for('getTopTracks') }}" class="spot-button">View Top Tracks</a>
+    </div>
+    <div class="home-page">
+        <h1>Song Swiper</h1>
+        <p>
+            Welcome to SongSwiper, your ultimate music discovery and playlist creation tool! Here at SongSwiper, we make finding
+            new music and building personalized playlists easier and more enjoyable than ever. Start by creating a new
+            playlist with a name and description of your choice, and we'll make song recommendations tailored specifically to you!
+            <br><br>To get to playlist making, simply click the button below to start swiping!
+            <br>If you want to view your top tracks, click "View Top Tracks" below!
+        </p>
+    </div>
+    <div class="button-right">
+        <a href="{{ url_for('showCreatePlaylist') }}" class="spot-button">Start Swiping</a>
+    </div>
 </div>
 {% endblock %}

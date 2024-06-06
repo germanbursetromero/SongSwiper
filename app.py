@@ -121,35 +121,6 @@ def redirectPage():
 def chooseAction():
     return render_template('choose_action.html')
 
-@app.route('/getTracks')
-def getTracks():
-    try:
-        token_info = get_token()
-    except:
-        print("User not logged in")
-        return redirect("/")
-    sp = spotipy.Spotify(auth=token_info["access_token"])
-    all_songs = []
-    iteration = 0
-    while True:
-        print(f"Fetching songs with offset {iteration * 50}")
-        items = sp.current_user_saved_tracks(limit=50, offset=iteration * 50)["items"]
-        iteration += 1
-        all_songs += items
-        if(iteration >= 50):
-            break
-    
-    limited_songs = all_songs[:50]
-    formatted_songs = []
-
-    for song in limited_songs:
-        track = song['track']
-        track_name = track['name']
-        artists = ', '.join(artist['name'] for artist in track['artists'])
-        formatted_songs.append(f"{track_name} by {artists}")
-
-    return "<br>".join(formatted_songs)
-
 @app.route('/getTopTracks')
 def getTopTracks():
     try:
@@ -174,37 +145,6 @@ def getTopTracks():
         formatted_tracks.append(f"{track_name} by {artists}")
 
     return "<br>".join(formatted_tracks)
-
-@app.route('/getRecommendations')
-def getRecommendations():
-    try:
-        token_info = get_token()
-    except:
-        print("User not logged in")
-        return redirect("/")
-    
-    sp = spotipy.Spotify(auth=token_info["access_token"])
-    
-    top_tracks = []
-    iteration = 0
-    while True:
-        items = sp.current_user_top_tracks(limit=10, offset=iteration * 50)["items"]
-        iteration += 1
-        top_tracks += items
-        if(iteration >= 50):
-            break
-
-    top_track_ids = [track['id'] for track in top_tracks]
-    
-    recommendations = sp.recommendations(seed_tracks=top_track_ids[:5], limit=20)["tracks"]
-    
-    formatted_recommendations = []
-    for track in recommendations:
-        track_name = track['name']
-        artists = ', '.join(artist['name'] for artist in track['artists'])
-        formatted_recommendations.append(f"{track_name} by {artists}")
-    
-    return "<br>".join(formatted_recommendations)
 
 @app.route('/createPlaylist', methods=['POST'])
 def createPlaylist():
@@ -285,30 +225,24 @@ def swipeAction():
     sp = spotipy.Spotify(auth=token_info["access_token"])
     user_id = get_spotify_user_id(token_info['access_token'])
     
+    # Get the track_uri outside the if block
+    track_uri = session['recommendation_ids'][session['current_index']]
+
     if action == 'like':
-        track_uri = session['recommendation_ids'][session['current_index']]
         playlist_id = session.get('playlist_id')
         if playlist_id:
             sp.user_playlist_add_tracks(user=sp.me()['id'], playlist_id=playlist_id, tracks=[track_uri])
-        update_song_preference(user_id, track_uri, 'like') #<----------
-        update_song_count(track_uri, 'like') #<----------
+        update_song_preference(user_id, track_uri, 'like')
+        update_song_count(track_uri, 'like')
         print(f"Liked: {track_uri}")
-    elif action == 'dislike': #<--------
-        update_song_preference(user_id, track_uri, 'dislike')#<--------
-        update_song_count(track_uri, 'dislike')#<--------
-        print(f"Disliked: {track_uri}")#<--------
+    elif action == 'dislike':
+        update_song_preference(user_id, track_uri, 'dislike')
+        update_song_count(track_uri, 'dislike')
+        print(f"Disliked: {track_uri}")
 
     session['current_index'] += 1
     if session['current_index'] >= len(session['recommendation_ids']):
         session['current_index'] = 0  # Reset or handle end of list case
     
-<<<<<<< HEAD
     next_song = session['recommendations'][session['current_index']]
     return jsonify(next_song)
-=======
-    next_song_id = session['recommendation_ids'][session['current_index']]
-    next_song = sp.track(next_song_id)
-    
-    return jsonify(next_song)
-
->>>>>>> 2dcac38af9e244df2fdd7eba7b50584bea05d024

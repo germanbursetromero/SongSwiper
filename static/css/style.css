@@ -54,13 +54,50 @@ nav h1{
     text-decoration: none;
 }
 
-.choose-action{
-    flex: 1;
-    text-align: center;
-    color: #ffffff;
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Adjust as needed */
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.spot-button{
+.button-left,
+.button-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-page {
+    background-color: #282828; /* Slightly lighter dark background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px #1DB954; /* Soft shadow for depth */
+    max-width: 800px; /* Limit the width */
+    text-align: center;
+    margin: 0 20px; /* Space around the home-page box */
+    flex: 2; /* Make the home-page take up more space */
+}
+
+.home-page h1 {
+    font-size: 2.5rem;
+    color: #1DB954;
+    margin-bottom: 20px;
+}
+
+.home-page p {
+    font-size: 1.2rem;
+    color: #ffffff;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.spot-button {
     display: inline-block;
     padding: 10px 20px;
     font-size: 16px;
@@ -69,10 +106,11 @@ nav h1{
     text-decoration: none;
     border-radius: 50px; /* Rounded corners */
     transition: background-color 0.3s ease;
-    margin-bottom: 5px;
+    border: none;
+    cursor: pointer;
 }
 
-.spot-button:hover{
+.spot-button:hover {
     background-color: #1ed760;
 }
 
@@ -80,7 +118,7 @@ nav h1{
     background-color: #282828; /* Slightly lighter dark background */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+    box-shadow: 0 4px 10px #1DB954; /* Soft shadow for depth */
     width: 100%;
     margin: auto;
     max-width: 400px; /* Limit the width */
