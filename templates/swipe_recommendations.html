@@ -11,7 +11,7 @@
         <div id="dislike-button" class="dislike-button">
             <span>&times;</span>
         </div>
-        <div class="player-container">
+        <div class="player-container" id="player-container">
             <iframe id="spotify-player" src="https://open.spotify.com/embed/track/{{ current_song['id'] }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
         </div>
         <div id="like-button" class="like-button">
@@ -20,6 +20,7 @@
     </div>
 </div>
 
+<script src="https://sdk.scdn.co/spotify-player.js"></script>
 <script>
     document.getElementById('like-button').addEventListener('click', function() {
         swipe('like');
@@ -30,23 +31,78 @@
     });
 
     function swipe(action) {
-        fetch('/swipeAction', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ action: action })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-            } else {
-                // Update the iframe with the next song
-                document.getElementById('spotify-player').src = `https://open.spotify.com/embed/track/${data.id}`;
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        const playerContainer = document.getElementById('player-container');
+        
+        if (action === 'like') {
+            playerContainer.classList.add('fly-right');
+        } else if (action === 'dislike') {
+            playerContainer.classList.add('fly-left');
+        }
+
+        // Refresh the player after animation
+        setTimeout(() => {
+            fetch('/swipeAction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // Update the iframe with the next song
+                    document.getElementById('spotify-player').src = `https://open.spotify.com/embed/track/${data.id}`;
+                    playerContainer.classList.remove('fly-right', 'fly-left');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }, 1000); // Match this with the animation duration
     }
+
+    // Spotify Player SDK Initialization
+    window.onSpotifyWebPlaybackSDKReady = () => {
+        const player = new Spotify.Player({
+            name: 'Web Playback SDK Quick Start Player',
+            getOAuthToken: callback => {
+                // Call token refresh function and pass token to callback
+                callback('YOUR_ACCESS_TOKEN');
+            }
+        });
+
+        // Error handling
+        player.addListener('initialization_error', ({ message }) => {
+            console.error(message);
+        });
+        player.addListener('authentication_error', ({ message }) => {
+            console.error(message);
+        });
+        player.addListener('account_error', ({ message }) => {
+            console.error(message);
+        });
+        player.addListener('playback_error', ({ message }) => {
+            console.error(message);
+        });
+
+        // Playback status updates
+        player.addListener('player_state_changed', state => {
+            console.log(state);
+        });
+
+        // Ready
+        player.addListener('ready', ({ device_id }) => {
+            console.log('Ready with Device ID', device_id);
+        });
+
+        // Not Ready
+        player.addListener('not_ready', ({ device_id }) => {
+            console.log('Device ID has gone offline', device_id);
+        });
+
+        // Connect to the player!
+        player.connect();
+    };
 </script>
 {% endblock %}

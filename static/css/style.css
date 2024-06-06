@@ -200,11 +200,11 @@ nav h1{
 }
 
 .like-button {
-    background-color: green;
+    background-color: #1DB954;
 }
 
 .dislike-button {
-    background-color: red;
+    background-color: rgb(212, 78, 78);
 }
 
 .player-container {
@@ -214,6 +214,32 @@ nav h1{
     transform: translate(-50%, -50%);
     z-index: 10;
     pointer-events: auto; /* Ensure the player is interactive */
+}
+
+.fly-right {
+    animation: fly-right .9s forwards; /* Change animation duration to 0.5s */
+}
+
+.fly-left {
+    animation: fly-left .7s forwards; /* Change animation duration to 0.5s */
+}
+
+@keyframes fly-right {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        transform: translate(calc(150% + 300px), -50%);
+    }
+}
+
+@keyframes fly-left {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        transform: translate(calc(-150% - 500px), -50%);
+    }
 }
 
 .like-button span, .dislike-button span {
