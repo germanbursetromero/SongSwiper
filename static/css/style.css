@@ -9,7 +9,7 @@
     height: 100vh;
     position: relative;
     overflow-y: auto;
-    background: #171717;
+    background: linear-gradient(to bottom, #000000, #414141)
 }
 
 nav{

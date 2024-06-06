@@ -18,7 +18,7 @@ app.config['SESSION_COOKIE_NAME'] = 'Beach Cookie'
 TOKEN_INFO = "token_info"
 
 class CustomCacheHandler(spotipy.cache_handler.CacheHandler):
-    def __init__(self):
+    def _init_(self):
         self.token_info = None
 
     def get_cached_token(self):
@@ -156,7 +156,7 @@ def getRecommendations():
     
     return "<br>".join(formatted_recommendations)
 
-@app.route('/createPlaylist', methods=['POST']) 
+@app.route('/createPlaylist', methods=['POST'])
 def createPlaylist():
     try:
         token_info = get_token()
@@ -182,7 +182,7 @@ def createPlaylist():
 
     session['playlist_id'] = playlist['id']
 
-    return "Playlist created successfully!"
+    return render_template('create_playlist.html')
 
 @app.route('/swipeRecommendations')
 def swipeRecommendations():

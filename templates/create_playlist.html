@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<div class="create-playlist">
+    <h2>Create a New Playlist</h2>
+    <form method="POST" action="{{ url_for('createPlaylist') }}">
+        <label for="name">Playlist Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea><br>
+        
+        <div class="switch">
+            <input type="checkbox" id="public" name="public">
+            <label for="public" class="switch-label">Public</label>
+        </div>
+        
+        <div class="switch">
+            <input type="checkbox" id="collaborative" name="collaborative">
+            <label for="collaborative" class="switch-label">Collaborative</label>
+        </div>
+        
+        <button type="submit">Create Playlist</button>
+    </form>
+</div>
+{% endblock %}
