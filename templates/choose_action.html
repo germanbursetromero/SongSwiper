@@ -7,21 +7,29 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <div class="container">
-    <div class="button-left">
-        <a href="{{ url_for('getTopTracks') }}" class="spot-button">View Top Tracks</a>
+    <div class="circle-wrapper">
+        <div class="center-circle">
+            <h1>Song Swiper</h1>
+            <p>
+                Welcome to SongSwiper, your ultimate music discovery and playlist creation tool! Here at SongSwiper, we make finding
+                new music and building personalized playlists easier and more enjoyable than ever. Start by creating a new
+                playlist with a name and description of your choice, and we'll make song recommendations tailored specifically to you!
+                <br><br>
+                To get to playlist making, simply click the button below to start swiping!
+                <br>
+                If you want to view your top tracks, click "view top tracks" below! 
+            </p>
+        </div>
     </div>
-    <div class="home-page">
-        <h1>Song Swiper</h1>
-        <p>
-            Welcome to SongSwiper, your ultimate music discovery and playlist creation tool! Here at SongSwiper, we make finding
-            new music and building personalized playlists easier and more enjoyable than ever. Start by creating a new
-            playlist with a name and description of your choice, and we'll make song recommendations tailored specifically to you!
-            <br><br>To get to playlist making, simply click the button below to start swiping!
-            <br>If you want to view your top tracks, click "View Top Tracks" below!
-        </p>
-    </div>
-    <div class="button-right">
-        <a href="{{ url_for('showCreatePlaylist') }}" class="spot-button">Start Swiping</a>
-    </div>
+    <a href="{{ url_for('getTopTracks') }}" class="button-left">
+        <span class="spot-button">
+            <span class="button-left-text">View Top Tracks</span>
+        </span>
+    </a>
+    <a href="{{ url_for('showCreatePlaylist') }}" class="button-right">
+        <span class="spot-button">
+            <span class="button-right-text">Start Swiping</span>
+        </span>
+    </a>
 </div>
 {% endblock %}

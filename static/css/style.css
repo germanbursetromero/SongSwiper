@@ -56,62 +56,108 @@ nav h1{
 
 .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    height: 100vh;
     width: 100%;
-    max-width: 1200px; /* Adjust as needed */
-    margin: 0 auto;
-    padding: 20px;
     box-sizing: border-box;
+    position: relative; /* Ensure proper positioning of elements */
+}
+
+.circle-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 800px;
+    height: 800px;
+    position: relative;
+}
+
+.center-circle {
+    width: 500px;
+    height: 500px;
+    background-color: #282828;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 0 4px 10px #1DB954; /* Soft shadow for depth */
+    z-index: 2; /* Ensure the center circle is above the buttons */
+}
+
+.center-circle h1 {
+    font-size: 2rem;
+    color: #1DB954;
+    margin-bottom: 10px;
+}
+
+.center-circle p {
+    font-size: 1rem;
+    color: #ffffff;
+    line-height: 1.4;
 }
 
 .button-left,
 .button-right {
-    flex: 1;
+    width: 550px;
+    height: 550px;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 1; /* Place the buttons behind the center circle */
+    background: linear-gradient(145deg, #1DB954, #1aa34a);
+    text-decoration: none;
 }
 
-.home-page {
-    background-color: #282828; /* Slightly lighter dark background */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px #1DB954; /* Soft shadow for depth */
-    max-width: 800px; /* Limit the width */
-    text-align: center;
-    margin: 0 20px; /* Space around the home-page box */
-    flex: 2; /* Make the home-page take up more space */
+.button-left {
+    left: calc(50% - 500px); /* Adjust position directly behind the circle */
 }
 
-.home-page h1 {
-    font-size: 2.5rem;
-    color: #1DB954;
-    margin-bottom: 20px;
+.button-right {
+    right: calc(50% - 500px); /* Adjust position directly behind the circle */
 }
 
-.home-page p {
-    font-size: 1.2rem;
-    color: #ffffff;
-    line-height: 1.6;
-    margin-bottom: 30px;
+.button-right-text {
+    text-decoration: none;
+    text-align: right;
+    margin-top: 255px;
+    margin-left: 300px;
+}
+
+.button-left-text{
+    text-decoration: none;
+    text-align: left;
+    margin-top: 255px;
+    margin-right: 300px;
 }
 
 .spot-button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1.5rem; /* Increase font size */
     color: #fff;
-    background-color: #1DB954; /* Spotify green */
     text-decoration: none;
-    border-radius: 50px; /* Rounded corners */
-    transition: background-color 0.3s ease;
     border: none;
     cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    padding: 20px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
 }
 
 .spot-button:hover {
-    background-color: #1ed760;
+    background: linear-gradient(145deg, #1ed760, #18a148);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    z-index: 2;
 }
 
 .create-playlist {
