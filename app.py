@@ -182,6 +182,10 @@ def createPlaylist():
 
     session['playlist_id'] = playlist['id']
 
+    return redirect(url_for('swipeRecommendations'))
+
+@app.route('/showCreatePlaylist', methods=['GET'])
+def showCreatePlaylist():
     return render_template('create_playlist.html')
 
 @app.route('/swipeRecommendations')
