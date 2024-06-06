@@ -5,11 +5,61 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import time
 import json
+import boto3
 
 app = Flask(__name__)
 
 load_dotenv()
+# ------------------------Initialize DynamoDB------------------------
+dynamodb = boto3.resource('dynamodb', region_name='your-region')
+user_table = dynamodb.Table('UserSongs')
+song_table = dynamodb.Table('SongLikesDislikes')
 
+def user_profile(token_info):
+    user_id = get_spotify_user_id(token_info['access_token'])
+    user_table.put_item(
+        Item={
+            'user_id': user_id,
+            'token_info': token_info,
+            'liked_songs': [],
+            'disliked_songs': []
+        }
+    )
+
+def get_spotify_user_id(access_token):
+    sp = spotipy.Spotify(auth=access_token)
+    user_info = sp.me()
+    return user_info['id']
+
+def update_song_preference(user_id, song_id, action): #updates a user's like/disliked songs
+    if action == 'like':
+        user_table.update_item(
+            Key={'user_id': user_id},
+            UpdateExpression="SET liked_songs = list_append(liked_songs, :i)",
+            ExpressionAttributeValues={':i': [song_id]}
+        )
+    elif action == 'dislike':
+        user_table.update_item(
+            Key={'user_id': user_id},
+            UpdateExpression="SET disliked_songs = list_append(disliked_songs, :i)",
+            ExpressionAttributeValues={':i': [song_id]}
+        )
+def update_song_count(song_id, action): #Updates whether a song was liked/disliked
+    if action == 'like':
+        song_table.update_item(
+            Key={'song_id': song_id},
+            UpdateExpression="ADD likes :inc",
+            ExpressionAttributeValues={':inc': 1},
+            ReturnValues="UPDATED_NEW"
+        )
+    elif action == 'dislike':
+        song_table.update_item(
+            Key={'song_id': song_id},
+            UpdateExpression="ADD dislikes :inc",
+            ExpressionAttributeValues={':inc': 1},
+            ReturnValues="UPDATED_NEW"
+        )
+#------------------------------------------------------------------------
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
@@ -226,13 +276,20 @@ def swipeAction():
         return redirect("/")
     
     sp = spotipy.Spotify(auth=token_info["access_token"])
+    user_id = get_spotify_user_id(token_info['access_token'])
     
     if action == 'like':
         track_uri = session['recommendations'][session['current_index']]['uri']
         playlist_id = session.get('playlist_id')
         if playlist_id:
             sp.user_playlist_add_tracks(user=sp.me()['id'], playlist_id=playlist_id, tracks=[track_uri])
+        update_song_preference(user_id, track_uri, 'like') #<----------
+        update_song_count(track_uri, 'like') #<----------
         print(f"Liked: {track_uri}")
+    elif action == 'dislike': #<--------
+        update_song_preference(user_id, track_uri, 'dislike')#<--------
+        update_song_count(track_uri, 'dislike')#<--------
+        print(f"Disliked: {track_uri}")#<--------
 
     session['current_index'] += 1
     if session['current_index'] >= len(session['recommendations']):
