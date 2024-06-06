@@ -39,8 +39,10 @@
             playerContainer.classList.add('fly-left');
         }
 
-        // Refresh the player after animation
         setTimeout(() => {
+            // Set the src attribute of the embedded player to an empty string
+            document.getElementById('spotify-player').src = '';
+
             fetch('/swipeAction', {
                 method: 'POST',
                 headers: {
@@ -59,50 +61,9 @@
                 }
             })
             .catch(error => console.error('Error:', error));
-        }, 1000); // Match this with the animation duration
+        }, 1000);
+        
     }
-
-    // Spotify Player SDK Initialization
-    window.onSpotifyWebPlaybackSDKReady = () => {
-        const player = new Spotify.Player({
-            name: 'Web Playback SDK Quick Start Player',
-            getOAuthToken: callback => {
-                // Call token refresh function and pass token to callback
-                callback('YOUR_ACCESS_TOKEN');
-            }
-        });
-
-        // Error handling
-        player.addListener('initialization_error', ({ message }) => {
-            console.error(message);
-        });
-        player.addListener('authentication_error', ({ message }) => {
-            console.error(message);
-        });
-        player.addListener('account_error', ({ message }) => {
-            console.error(message);
-        });
-        player.addListener('playback_error', ({ message }) => {
-            console.error(message);
-        });
-
-        // Playback status updates
-        player.addListener('player_state_changed', state => {
-            console.log(state);
-        });
-
-        // Ready
-        player.addListener('ready', ({ device_id }) => {
-            console.log('Ready with Device ID', device_id);
-        });
-
-        // Not Ready
-        player.addListener('not_ready', ({ device_id }) => {
-            console.log('Device ID has gone offline', device_id);
-        });
-
-        // Connect to the player!
-        player.connect();
-    };
 </script>
+
 {% endblock %}

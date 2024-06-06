@@ -25,6 +25,16 @@ nav h1{
     flex: 1;
     text-align: left;
     color: white;
+    text-decoration: none;
+}
+
+.header-link{
+    text-decoration: none;
+    color: inherit;
+}
+
+.header-link:visited{
+    color: inherit;
 }
 
 .nav-links{
@@ -217,11 +227,11 @@ nav h1{
 }
 
 .fly-right {
-    animation: fly-right .9s forwards; /* Change animation duration to 0.5s */
+    animation: fly-right 0.58s forwards;
 }
 
 .fly-left {
-    animation: fly-left .7s forwards; /* Change animation duration to 0.5s */
+    animation: fly-left 0.5s forwards;
 }
 
 @keyframes fly-right {
@@ -229,7 +239,7 @@ nav h1{
         transform: translate(-50%, -50%);
     }
     100% {
-        transform: translate(calc(150% + 300px), -50%);
+        transform: translate(100vw, -50%);
     }
 }
 
@@ -238,7 +248,7 @@ nav h1{
         transform: translate(-50%, -50%);
     }
     100% {
-        transform: translate(calc(-150% - 500px), -50%);
+        transform: translate(-100vw, -50%);
     }
 }
 
