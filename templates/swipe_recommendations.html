@@ -7,10 +7,63 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <div class="song-container">
-    <iframe id="spotify-player" src="https://open.spotify.com/embed/track/{{ current_song['id'] }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    <div class="buttons">
-        <button id="like-button">Like</button>
-        <button id="dislike-button">Dislike</button>
+    <div class="option-buttons">
+        <div id="dislike-button" class="dislike-button">
+            <span>&times;</span>
+        </div>
+        <div class="player-container" id="player-container">
+            <iframe id="spotify-player" src="https://open.spotify.com/embed/track/{{ current_song['id'] }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        </div>
+        <div id="like-button" class="like-button">
+            <span>&#10003;</span>
+        </div>
     </div>
 </div>
+
+<script src="https://sdk.scdn.co/spotify-player.js"></script>
+<script>
+    document.getElementById('like-button').addEventListener('click', function() {
+        swipe('like');
+    });
+
+    document.getElementById('dislike-button').addEventListener('click', function() {
+        swipe('dislike');
+    });
+
+    function swipe(action) {
+        const playerContainer = document.getElementById('player-container');
+        
+        if (action === 'like') {
+            playerContainer.classList.add('fly-right');
+        } else if (action === 'dislike') {
+            playerContainer.classList.add('fly-left');
+        }
+
+        setTimeout(() => {
+            // Set the src attribute of the embedded player to an empty string
+            document.getElementById('spotify-player').src = '';
+
+            fetch('/swipeAction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // Update the iframe with the next song
+                    document.getElementById('spotify-player').src = `https://open.spotify.com/embed/track/${data.id}`;
+                    playerContainer.classList.remove('fly-right', 'fly-left');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }, 1000);
+        
+    }
+</script>
+
 {% endblock %}
