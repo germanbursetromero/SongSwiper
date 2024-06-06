@@ -30,6 +30,28 @@ class CustomCacheHandler(spotipy.cache_handler.CacheHandler):
     def clear_cache(self):
         session.pop(TOKEN_INFO, None)
 
+def get_token():
+    token_info = session.get(TOKEN_INFO, None)
+    if not token_info:
+        raise "exception"
+    now = int(time.time())
+
+    is_expired = token_info["expires_at"] - now < 60
+    if(is_expired):
+        sp_oauth = create_spotify_oauth()
+        token_info = sp_oauth.refresh_access_token(token_info["refresh_token"])
+        session[TOKEN_INFO] = token_info
+    return token_info
+
+def create_spotify_oauth():
+    return SpotifyOAuth(
+        client_id= client_id,
+        client_secret= client_secret,
+        redirect_uri=url_for('redirectPage', _external=True),
+        scope="user-library-read user-top-read playlist-modify-public playlist-modify-private",
+        cache_handler=CustomCacheHandler()
+    )
+
 @app.route('/')
 def login():
     sp_oauth = create_spotify_oauth()
@@ -218,25 +240,3 @@ def swipeAction():
     
     next_song = session['recommendations'][session['current_index']]
     return jsonify(next_song)
-
-def get_token():
-    token_info = session.get(TOKEN_INFO, None)
-    if not token_info:
-        raise "exception"
-    now = int(time.time())
-
-    is_expired = token_info["expires_at"] - now < 60
-    if(is_expired):
-        sp_oauth = create_spotify_oauth()
-        token_info = sp_oauth.refresh_access_token(token_info["refresh_token"])
-        session[TOKEN_INFO] = token_info
-    return token_info
-
-def create_spotify_oauth():
-    return SpotifyOAuth(
-        client_id= client_id,
-        client_secret= client_secret,
-        redirect_uri=url_for('redirectPage', _external=True),
-        scope="user-library-read user-top-read playlist-modify-public playlist-modify-private",
-        cache_handler=CustomCacheHandler()
-    )

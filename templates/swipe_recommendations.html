@@ -23,22 +23,16 @@
         <button type="submit">Create Playlist</button>
     </form>
 </div>
-    <h2>Swipe Recommendations</h2>
-    {% for track in recommendations %}
-    <div class="song-container">
-        <h2 id="song-title">{{ current_song['name'] }}</h2>
-        <p id="song-artist">{{ current_song['artists'][0]['name'] }}</p>
-        <audio controls id="song-preview">
-            <source src="{{ current_song['preview_url'] }}" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-        <div class="buttons">
-            <button id="like-button">Like</button>
-            <button id="dislike-button">Dislike</button>
-        </div>
+<div class="song-container">
+    <h2 id="song-title">{{ current_song['name'] }}</h2>
+    <p id="song-artist">{{ current_song['artists'][0]['name'] }}</p>
+    <audio controls id="song-preview">
+        <source src="{{ current_song['preview_url'] }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <div class="buttons">
+        <button id="like-button">Like</button>
+        <button id="dislike-button">Dislike</button>
     </div>
-
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    {% endfor %}
 </div>
 {% endblock %}
