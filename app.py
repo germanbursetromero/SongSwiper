@@ -209,10 +209,13 @@ def swipeRecommendations():
 
         top_track_ids = [track['id'] for track in top_tracks]
         recommendations = sp.recommendations(seed_tracks=top_track_ids[:5], limit=20)["tracks"]
-        session['recommendations'] = recommendations
+        session['recommendation_ids'] = [track['id'] for track in recommendations]
         session['current_index'] = 0
     
-    current_song = session['recommendations'][session['current_index']]
+    current_song_id = session['recommendation_ids'][session['current_index']]
+    sp = spotipy.Spotify(auth=token_info["access_token"])
+    current_song = sp.track(current_song_id)
+    
     return render_template('swipe_recommendations.html', current_song=current_song)
 
 @app.route('/swipeAction', methods=['POST'])
@@ -232,15 +235,18 @@ def swipeAction():
     sp = spotipy.Spotify(auth=token_info["access_token"])
     
     if action == 'like':
-        track_uri = session['recommendations'][session['current_index']]['uri']
+        track_uri = session['recommendation_ids'][session['current_index']]
         playlist_id = session.get('playlist_id')
         if playlist_id:
             sp.user_playlist_add_tracks(user=sp.me()['id'], playlist_id=playlist_id, tracks=[track_uri])
         print(f"Liked: {track_uri}")
 
     session['current_index'] += 1
-    if session['current_index'] >= len(session['recommendations']):
+    if session['current_index'] >= len(session['recommendation_ids']):
         session['current_index'] = 0  # Reset or handle end of list case
     
-    next_song = session['recommendations'][session['current_index']]
+    next_song_id = session['recommendation_ids'][session['current_index']]
+    next_song = sp.track(next_song_id)
+    
     return jsonify(next_song)
+
